@@ -21,4 +21,6 @@ public class User {
 	private LocalDate birthday;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
+
+
 }
