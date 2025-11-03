@@ -42,7 +42,7 @@ public class UserRepository {
 				user.getBirthday(),
 				user.getMobile(),
 				user.getEmail(),
-				user.getGender(),
+				user.getGender().name(),
 				user.getCreatedAt(),
 				user.getUpdatedAt()
 		);
