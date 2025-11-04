@@ -1,6 +1,7 @@
 package com.kt.repository;
 
 import com.kt.domain.Gender;
+import com.kt.dto.CustomPage;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -104,5 +105,21 @@ public class UserRepository {
 
     }
 
+    public CustomPage selectAll(int page, int size) {
+        var sql = "SELECT * FROM MEMBER LIMIT ? OFFSET ?";
 
+        var users = jdbcTemplate.query(sql, rowMapper(), size, page * size);
+
+        var countSql = "SELECT COUNT(*) FROM MEMBER";
+        var totalElements = jdbcTemplate.queryForObject(countSql, Long.class);
+        var pages = (int) Math.ceil((double)totalElements / size);
+
+        return new CustomPage(
+                users,
+                size,
+                page,
+                pages,
+                totalElements
+        );
+    }
 }
