@@ -1,7 +1,14 @@
 package com.kt.repository;
 
+import com.kt.domain.Gender;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Optional;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCallback;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import com.kt.domain.User;
@@ -62,4 +69,40 @@ public class UserRepository {
 
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, loginId));
     }
+
+    public void updatePassWordById(String userId, String newHashedPassword) {
+        var sql = "UPDATE MEMBER SET password = ? WHERE id = ?";
+        jdbcTemplate.update(sql, newHashedPassword, userId);
+    }
+
+    public Optional<User> selectById(long id) {
+        var sql = "SELECT * FROM MEMBER WHERE id = ?";
+
+        var list = jdbcTemplate.query(sql, rowMapper(), id);
+
+        return list.stream().findFirst();
+    }
+
+    private RowMapper<User> rowMapper() {
+        return (rs,rowNum) -> mapToUser(rs);
+    }
+
+    private User mapToUser(ResultSet rs) throws SQLException {
+
+        return new User(
+                rs.getLong("id"),
+                rs.getString("loginId"),
+                rs.getString("password"),
+                rs.getString("name"),
+                rs.getString("email"),
+                rs.getString("mobile"),
+                Gender.valueOf(rs.getString("gender")),
+                rs.getObject("birthday", LocalDate.class),
+                rs.getObject("createdAt", LocalDateTime.class),
+                rs.getObject("updatedAt", LocalDateTime.class)
+        );
+
+    }
+
+
 }
