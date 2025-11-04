@@ -1,5 +1,6 @@
 package com.kt.service;
 
+import com.kt.dto.CustomPage;
 import java.time.LocalDateTime;
 import org.springframework.stereotype.Service;
 
@@ -50,5 +51,10 @@ public class UserService {
 
         userRepository.updatePassWordById(loginId, password);
 
+    }
+
+    public CustomPage search(int page, int size, String keyword) {
+
+        return userRepository.selectAll(page-1, size,keyword);
     }
 }

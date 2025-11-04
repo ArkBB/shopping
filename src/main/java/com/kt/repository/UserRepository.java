@@ -122,4 +122,23 @@ public class UserRepository {
                 totalElements
         );
     }
+
+    public CustomPage selectAll(int page, int size, String keyword) {
+
+        var sql = "SELECT * FROM MEMBER WHERE name LIKE CONCAT('%', ? , '%') LIMIT ? OFFSET ?";
+
+        var users = jdbcTemplate.query(sql, rowMapper(), keyword, size, page);
+
+        var countSql = "SELECT COUNT(*) FROM MEMBER WHERE name LIKE CONCAT('%', ? , '%')";
+        var totalElements = jdbcTemplate.queryForObject(countSql, Long.class,keyword);
+        var pages = (int) Math.ceil((double)totalElements / size);
+
+        return new CustomPage(
+                users,
+                size,
+                page,
+                pages,
+                totalElements
+        );
+    }
 }
